@@ -1,0 +1,134 @@
+# =========================
+# Python
+# =========================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual Environment
+venv/
+env/
+ENV/
+.venv/
+
+# =========================
+# Environment Variables
+# =========================
+.env
+.env.*
+!.env.example
+
+# =========================
+# Logs
+# =========================
+*.log
+logs/
+server.log
+debug.log
+
+# =========================
+# Cache
+# =========================
+.pytest_cache/
+.mypy_cache/
+.cache/
+.coverage
+htmlcov/
+
+# =========================
+# Build / Distribution
+# =========================
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# =========================
+# Jupyter
+# =========================
+.ipynb_checkpoints/
+
+# =========================
+# VS Code
+# =========================
+.vscode/
+
+# =========================
+# PyCharm
+# =========================
+.idea/
+
+# =========================
+# OS Files
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# Temporary Files
+# =========================
+tmp/
+temp/
+*.tmp
+*.bak
+
+# =========================
+# Database Files
+# =========================
+*.sqlite
+*.sqlite3
+*.db
+
+# =========================
+# Lead Generation Outputs
+# =========================
+exports/
+output/
+results/
+reports/
+downloads/
+
+*.csv
+*.xlsx
+*.xls
+
+# Keep sample files only
+!sample.csv
+!example.csv
+
+# =========================
+# Playwright
+# =========================
+playwright-report/
+test-results/
+screenshots/
+trace.zip
+
+# =========================
+# Selenium / Browser Data
+# =========================
+browser_profiles/
+user_data/
+
+# =========================
+# Secrets
+# =========================
+credentials.json
+service_account.json
+api_keys.json
+secrets.json
+
+# =========================
+# Gemini / AI Config
+# =========================
+.gemini/
+.claude/
+.cursor/
+
+# =========================
+# Node (if project has frontend)
+# =========================
+node_modules/
+npm-debug.log*
+yarn-error.log*
