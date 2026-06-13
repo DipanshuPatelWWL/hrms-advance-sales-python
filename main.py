@@ -20,7 +20,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 ENV_PATH = os.path.join(BASE_DIR, ".env")
 load_dotenv(ENV_PATH)
 
-from utils.db import connect_db, close_db
+from utils.db import close_db
 from routers import leads, scoring, email_gen, website, proposal
 
 # ── API KEY SECURITY ─────────────────────────────────────────────────────────
@@ -43,7 +43,8 @@ async def get_api_key(header_key: str = Security(api_key_header)):
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    await connect_db()
+    # No blocking I/O here — the MongoDB client is initialised lazily on
+    # first use so the app is ready to accept requests immediately.
     yield
     await close_db()
 
