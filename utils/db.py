@@ -1,5 +1,5 @@
 from motor.motor_asyncio import AsyncIOMotorClient
-from pymongo.errors import ConnectionFailure
+from fastapi import HTTPException
 from dotenv import load_dotenv
 import os
 
@@ -14,17 +14,27 @@ db = None
 
 
 async def connect_db():
-    """Connect to MongoDB. Called on app startup."""
+    """Initialise the MongoDB client without blocking startup.
+
+    The client is created immediately and the database handle is assigned so
+    that request handlers can use them straight away.  No network I/O is
+    performed here — Motor establishes the actual connection lazily on the
+    first operation, so a slow or temporarily-unavailable Atlas cluster will
+    never prevent the app from accepting requests.
+    """
     global client, db
     try:
-        client = AsyncIOMotorClient(MONGO_URI, serverSelectionTimeoutMS=5000)
-        # Ping to confirm connection works
-        await client.admin.command("ping")
+        client = AsyncIOMotorClient(
+            MONGO_URI,
+            serverSelectionTimeoutMS=5000,
+            connectTimeoutMS=5000,
+        )
         db = client[MONGO_DB_NAME]
-        print(f"MongoDB connected -> {MONGO_DB_NAME}")
-    except ConnectionFailure as e:
-        print(f"MongoDB connection failed: {e}")
-        raise
+        print(f"MongoDB client initialised -> {MONGO_DB_NAME}")
+    except Exception as e:
+        # Log the problem but do NOT re-raise — the app must still start so
+        # that the health-check endpoint and other routes remain reachable.
+        print(f"MongoDB client initialisation error (non-fatal): {e}")
 
 
 async def close_db():
@@ -36,10 +46,27 @@ async def close_db():
 
 
 def get_db():
-    """Return the active database instance."""
+    """Return the active database instance.
+
+    Raises HTTP 503 if the client was never successfully initialised so that
+    callers receive a clear error instead of an unhandled AttributeError.
+    """
+    if db is None:
+        raise HTTPException(
+            status_code=503,
+            detail="Database unavailable — MongoDB client is not initialised.",
+        )
     return db
 
 
 def get_collection(name: str):
-    """Return a named collection from the active database."""
+    """Return a named collection from the active database.
+
+    Raises HTTP 503 if the client was never successfully initialised.
+    """
+    if db is None:
+        raise HTTPException(
+            status_code=503,
+            detail="Database unavailable — MongoDB client is not initialised.",
+        )
     return db[name]
