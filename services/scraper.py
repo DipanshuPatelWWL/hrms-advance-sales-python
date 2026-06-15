@@ -58,6 +58,10 @@ SKIP_DOMAINS = [
     "builderonline.com", "contractor.com",
 ]
 
+def _is_skip_domain(url: str) -> bool:
+    url = url.lower()
+    return any(domain in url for domain in SKIP_DOMAINS)
+
 DIRECTORY_TITLE_KEYWORDS = [
     "top 10", "top 15", "top 20", "top 25", "top 50",
     "best companies", "best agencies", "list of", "rankings",
