@@ -33,15 +33,16 @@ api_key_header = APIKeyHeader(name=API_KEY_NAME, auto_error=False)
 
 async def get_api_key(header_key: str = Security(api_key_header)):
     if header_key == API_KEY:
+        print("✅ AUTH SUCCESS")
         return header_key
-    
-    # Log auth failure securely (only first few chars)
-    received = header_key[:4] if header_key else "None"
-    expected = API_KEY[:4] if API_KEY else "None"
-    print(f"❌ [AUTH FAILED] Received: {received}... Expected: {expected}...")
-    
+
+    print("❌ AUTH FAILED")
+    print("Received Key:", header_key)
+    print("Expected Key:", API_KEY)
+
     raise HTTPException(
-        status_code=HTTP_403_FORBIDDEN, detail="Could not validate credentials"
+        status_code=HTTP_403_FORBIDDEN,
+        detail="Could not validate credentials"
     )
 
 @asynccontextmanager
