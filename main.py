@@ -25,6 +25,9 @@ from routers import leads, scoring, email_gen, website, proposal
 
 # ── API KEY SECURITY ─────────────────────────────────────────────────────────
 API_KEY = os.getenv("PYTHON_ENGINE_API_KEY", "dev-secret-key-12345")
+print("=== PYTHON AUTH ===")
+print("ENV KEY EXISTS:", bool(os.getenv("PYTHON_ENGINE_API_KEY")))
+print("API KEY PREFIX:", API_KEY[:6] if API_KEY else "NONE")
 API_KEY_NAME = "X-API-KEY"
 api_key_header = APIKeyHeader(name=API_KEY_NAME, auto_error=False)
 
