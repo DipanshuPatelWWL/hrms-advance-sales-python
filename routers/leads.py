@@ -96,6 +96,12 @@ async def find_leads(req: FindLeadsRequest):
         )
 
     print(f"[ROUTE] find-leads returning {len(leads)} leads")
+
+    if leads:
+     print("FIRST LEAD:")
+     print(leads[0])
+    else:
+     print("NO LEADS RETURNED FROM SCRAPER")
     from fastapi.responses import JSONResponse
     resp = JSONResponse(content={
         "success":     True,

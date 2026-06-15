@@ -450,6 +450,13 @@ async def find_and_score_leads(
     print(f"\n[START SEARCH] Query: '{search_query}' (limit={limit})")
     t_search_start = time.time()
     search_results = await _search_companies(search_query, limit)
+    print("=" * 80)
+    print("SEARCH QUERY:", search_query)
+    print("SEARCH RESULTS COUNT:", len(search_results))
+    for r in search_results[:10]:
+        print("URL:", r.get("url"))
+        print("TITLE:", r.get("title"))
+        print("=" * 80)
     t_search_end = time.time()
     print(f"[END SEARCH] Found {len(search_results)} candidate URLs in {t_search_end - t_search_start:.2f}s")
 
@@ -468,6 +475,7 @@ async def find_and_score_leads(
 
     raw_leads = await asyncio.gather(*[scrape_one(r) for r in search_results])
     raw_leads = [l for l in raw_leads if l is not None]
+    print("RAW LEADS COUNT:", len(raw_leads))
 
     # ── Deduplicate by website ──────────────────────────────────────────────
     seen_websites = set()
@@ -497,6 +505,7 @@ async def find_and_score_leads(
             return await score_and_analyze_lead(lead)
 
     scored_leads = await asyncio.gather(*[score_one(l) for l in raw_leads[:limit]])
+    print("SCORED LEADS COUNT:", len(scored_leads))
     t_scoring_end = time.time()
     print(f"[END SCORING] Scored {len(scored_leads)} leads in {t_scoring_end - t_scoring_start:.2f}s")
 
@@ -590,5 +599,16 @@ async def find_and_score_leads(
     
     t_end_all = time.time()
     print(f"[RETURN RESPONSE] Total time: {t_end_all - t_start_all:.2f}s")
-    
+    print("FINAL LEADS COUNT:", len(final))
+
+    for lead in final[:5]:
+     print(
+        "LEAD:",
+        lead.get("company_name"),
+        "|",
+        lead.get("website"),
+        "|",
+        lead.get("email")
+    )
+
     return final
